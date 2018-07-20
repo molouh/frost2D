@@ -6,6 +6,6 @@
 	"description":"Lightweight HTML5 game engine for Haxe",
 	"version":"0.1.1",
 	"classPath":"src",
-	"releasenote":"First experimental release of frost2D",
+	"releasenote":"Bug fixes and repository rearrangement",
 	"contributors":["JoshuaStone"]
 }
