@@ -15,9 +15,10 @@ import frost2d.graphics.Sprite;
 
 class HelloWorld extends Sprite {
     
-    public static var root(default, never):HelloWorld = new HelloWorld();
+    public static var root(default, null):HelloWorld;
     
     static function main() {
+        root = new HelloWorld();
         Game.start(root, 800, 450, "#202020");
         Game.loader.onComplete = root.loaded;
     }
