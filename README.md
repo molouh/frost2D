@@ -5,7 +5,7 @@ Ease of use, minimal infrastructure, and efficiency are the core principles of f
 *Note: It's early in development, but stable versions are coming!*
 
 ### Documentation
-Full source code documentation is available: [http://frost2d.com/docs/0.1.0/](http://frost2d.com/docs/0.1.0/)
+Full source code documentation is available: [http://frost2d.com/docs/](http://frost2d.com/docs/)
 
 ### Example Code
 
