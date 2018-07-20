@@ -7,7 +7,7 @@ import js.html.Element;
 import js.html.KeyboardEvent;
 import js.html.MouseEvent;
 
-/** A system for keeping track of input events and making thier states available at all times. */
+/** A system for keeping track of input events and keeping key states available. */
 class Input {
 	
 	/** Whether or not the listeners have been initialized. */

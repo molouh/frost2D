@@ -289,13 +289,13 @@ class RenderCanvas {
 		var img:Dynamic = cast image;
 		if (img == null || img.width == 0 || img.height == 0) return;
 		if (clip == null || (clip.x == 0 && clip.y == 0 && clip.width == img.width && clip.height == img.height)) {
-			_ctx.drawImage(image, 0, 0);
+			_ctx.drawImage(img, 0, 0);
 		} else if (safe) {
 			var rect:Rectangle = getSafeClipRect(img.width, img.height, clip.x, clip.y, clip.width, clip.height);
 			if (rect == null) return;
-			_ctx.drawImage(image, rect.x, rect.y, rect.width, rect.height, clip.x < 0 ? x - clip.x : x, clip.y < 0 ? y - clip.y : y, rect.width, rect.height);
+			_ctx.drawImage(img, rect.x, rect.y, rect.width, rect.height, clip.x < 0 ? x - clip.x : x, clip.y < 0 ? y - clip.y : y, rect.width, rect.height);
 		} else {
-			_ctx.drawImage(image, clip.x, clip.y, clip.width, clip.height, x, y, clip.width, clip.height);
+			_ctx.drawImage(img, clip.x, clip.y, clip.width, clip.height, x, y, clip.width, clip.height);
 		}
 	}
 	

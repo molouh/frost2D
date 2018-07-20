@@ -335,7 +335,8 @@ class Game {
 			else if (type == 7) canvas.drawArc(i[1], i[2], i[3], i[4], i[5], i[6], i[7], i[8]);
 			else if (type == 8) canvas.drawEllipse(i[1], i[2], i[3], i[4]);
 			else if (type == 9) canvas.drawRoundRect(i[1], i[2], i[3], i[4], i[5], i[6], i[7], i[8]);
-			else if (type == 10) canvas.drawText(i[1], i[2], i[3], i[4], i[5], i[6], i[7], i[8]);
+			else if (type == 10) canvas.drawImage(i[1], i[2], i[3], i[4], i[5]);
+			else if (type == 11) canvas.drawText(i[1], i[2], i[3], i[4], i[5], i[6], i[7], i[8]);
 		}
 		
 		canvas.scale(1 / sx, 1 / sy);
