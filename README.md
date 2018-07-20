@@ -1,5 +1,8 @@
-# frost2D
-*Lightweight HTML5 game engine for Haxe*
+## frost2D - Lightweight HTML5 game engine for Haxe
+
+Ease of use, minimal infrastructure, and efficiency are the core principles of frost2D. It's goal is to keep you making web games, not wasting time dealing with cumbersome API's and such.
+
+*Note: It's early in development, but stable versions are coming!*
 
 ### Documentation
 Full source code documentation is available: [http://frost2d.com/docs/0.1.0/](http://frost2d.com/docs/0.1.0/)
