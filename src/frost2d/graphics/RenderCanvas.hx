@@ -289,7 +289,7 @@ class RenderCanvas {
 		var img:Dynamic = cast image;
 		if (img == null || img.width == 0 || img.height == 0) return;
 		if (clip == null || (clip.x == 0 && clip.y == 0 && clip.width == img.width && clip.height == img.height)) {
-			_ctx.drawImage(img, 0, 0);
+			_ctx.drawImage(img, x, y);
 		} else if (safe) {
 			var rect:Rectangle = getSafeClipRect(img.width, img.height, clip.x, clip.y, clip.width, clip.height);
 			if (rect == null) return;
