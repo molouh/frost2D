@@ -31,7 +31,7 @@ class TextSprite extends Sprite {
 	/** Line thickness, in pixels. */
 	public var strokeThickness:Float = 1;
 	/** CSS formatted color to use for strokes. Can be null to not draw them. */
-	public var strokeColor:String = "#000";
+	public var strokeColor:String = null;
 	/** Horizontal alignment of the text within the bounds. */
 	public var align:String = TextAlign.LEFT;
 	/** Pivot point to offset the bounds. */
@@ -51,13 +51,16 @@ class TextSprite extends Sprite {
 		this.fillColor = fillColor;
 		this.fontWeight = fontWeight;
 		
-		onRender = function(canvas:RenderCanvas) {
-			selfBounds(); // triggers bounds to update if changed
-			if (fontSize <= 0) return;
-			if (fillColor != null) canvas.beginFill(this.fillColor);
-			if (strokeColor != null && strokeThickness > 0) canvas.beginStroke(strokeThickness, strokeColor);
-			canvas.drawText(text, _textBounds.x + (align == TextAlign.RIGHT ? _textBounds.width : align == TextAlign.CENTER ? _textBounds.width / 2 : 0), _textBounds.y, fontName, fontSize, fontWeight, align, lineHeight);
-		};
+		onRender = render;
+	}
+	
+	private function render(canvas:RenderCanvas) {
+		selfBounds(); // triggers bounds to update if changed
+		if (text.length == 0) return;
+		if (fontSize <= 0) return;
+		if (fillColor != null) canvas.beginFill(fillColor);
+		if (strokeColor != null && strokeThickness > 0) canvas.beginStroke(strokeThickness, strokeColor);
+		canvas.drawText(text, _textBounds.x + (align == TextAlign.RIGHT ? _textBounds.width : align == TextAlign.CENTER ? _textBounds.width / 2 : 0), _textBounds.y, fontName, fontSize, fontWeight, align, lineHeight);
 	}
 	
 	override public function selfBounds():Rectangle {

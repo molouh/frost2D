@@ -55,6 +55,7 @@ class Sprite {
 			_transform.translate(x, y);
 			_transform.rotate(rotation * Math.PI / 180);
 			_transform.scale(scaleX, scaleY);
+			_updateForward = false;
 		}
 		return _transform;
 	}
@@ -70,6 +71,7 @@ class Sprite {
 				_transformReverse.rotate(-obj.rotation * Math.PI / 180);
 				_transformReverse.translate(-obj.x, -obj.y);
 				obj = obj.parent;
+				_updateReverse = false;
 			}
 		}
 		return _transform;

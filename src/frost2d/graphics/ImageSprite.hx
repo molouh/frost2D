@@ -28,11 +28,12 @@ class ImageSprite extends Sprite {
 	/**
 	 * @param	image	The image to be drawn.
 	 */
-	public function new(image:Image) {
+	public function new(image:Image, clip:Rectangle = null) {
 		super();
 		this.image = image;
+		this.clip = clip;
 		onRender = function(canvas:RenderCanvas):Void {
-			canvas.drawImage(image, 0, 0, clip);
+			canvas.drawImage(image, 0, 0, this.clip);
 		};
 	}
 	

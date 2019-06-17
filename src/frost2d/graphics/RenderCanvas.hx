@@ -289,7 +289,7 @@ class RenderCanvas {
 		var img:Dynamic = cast image;
 		if (img == null || img.width == 0 || img.height == 0) return;
 		if (clip == null || (clip.x == 0 && clip.y == 0 && clip.width == img.width && clip.height == img.height)) {
-			_ctx.drawImage(img, 0, 0);
+			_ctx.drawImage(img, x, y);
 		} else if (safe) {
 			var rect:Rectangle = getSafeClipRect(img.width, img.height, clip.x, clip.y, clip.width, clip.height);
 			if (rect == null) return;
@@ -309,11 +309,12 @@ class RenderCanvas {
 	 * @param	fontWeight	The font weight (400 is normal).
 	 * @param	align		Horizontal alignment of the text around the provided position.
 	 * @param	lineHeight	Distance from the top one line to another, as a multiple of the font size.
+	 * @param	baseline	...
 	 */
-	public function drawText(text:String, x:Float, y:Float, fontName:String, fontSize:Float, fontWeight:Int = FontWeight.NORMAL, align:String = TextAlign.LEFT, lineHeight:Float = 1.25):Void {
+	public function drawText(text:String, x:Float, y:Float, fontName:String, fontSize:Float, fontWeight:Int = FontWeight.NORMAL, align:String = TextAlign.LEFT, lineHeight:Float = 1.25, baseline:String = "top"):Void {
 		if ((!filling && !stroking) || fontSize <= 0) return;
 		_ctx.font = (fontWeight != FontWeight.NORMAL ? fontWeight + " " : "") + fontSize + "px " + fontName;
-		_ctx.textBaseline = "top";
+		_ctx.textBaseline = baseline;
 		_ctx.textAlign = align;
 		var lines:Array<String> = text.split('\n');
 		for (i in 0 ... lines.length) {

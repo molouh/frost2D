@@ -27,6 +27,7 @@ class Game {
 	/** How to handle resizing the game to fit in the page.
 		Note: Changes are applied in the next frame. **/
 	public static var scaleMode:String = ScaleMode.NEVER;
+	public static var scaleDPI:Bool = false;
 	/** How to handle alignment of the game in the page.
 		Note: Changes are applied in the next frame. **/
 	public static var align:String = GameAlign.TOP_LEFT;
@@ -72,9 +73,9 @@ class Game {
 	/** Height of the game when it was started. */
 	private static var startHeight:Int;
 	/** Current CSS width of the canvas. */
-	private static var styleWidth:Int;
+	private static var styleWidth:Float;
 	/** Current CSS height of the canvas. */
-	private static var styleHeight:Int;
+	private static var styleHeight:Float;
 	/** Previous true width of the canvas. */
 	private static var lastWidth:Int;
 	/** Previous true height of the canvas. */
@@ -355,28 +356,38 @@ class Game {
 	/** Adjusts the size of the game if the resize mode was changed. */
 	private static function adjustSize():Void {
 		resized = false;
+		
+		var ratio:Float = Browser.window.devicePixelRatio != null ? Browser.window.devicePixelRatio : 1;
+		// Currently only works with ScaleMode.NEVER && ScaleMode.SCALE
+		
 		if (scaleMode == ScaleMode.MATCH) {
 			width = Browser.window.innerWidth;
 			height = Browser.window.innerHeight;
 			if (canvas.width != width) { canvas.width = width; resized = true; }
 			if (canvas.height != height) { canvas.height = height; resized = true; }
+			styleWidth = canvas.width;
+			styleHeight = canvas.height;
 		} else if (scaleMode == ScaleMode.SCALE) {
 			width = startWidth;
 			height = startHeight;
 			var aspect:Float = startWidth / startHeight;
 			var aspect2:Float = Browser.window.innerWidth / Browser.window.innerHeight;
-			var s:Float;
+			var s:Float = 1;
 			if (aspect2 > aspect) {
-				if (canvas.height != Browser.window.innerHeight) {
-					canvas.width = Math.round(Browser.window.innerHeight * aspect);
-					canvas.height = Browser.window.innerHeight;
-				}
+				//if (canvas.height != Browser.window.innerHeight * ratio) {
+					canvas.width = Math.round(Browser.window.innerHeight * ratio * aspect);
+					canvas.height = Math.round(Browser.window.innerHeight * ratio);
+					styleWidth = Browser.window.innerHeight * aspect;
+					styleHeight = Browser.window.innerHeight;
+				//}
 				s = canvas.height / height;
 			} else {
-				if (canvas.width != Browser.window.innerWidth) {
-					canvas.width = Browser.window.innerWidth;
-					canvas.height = Math.round(Browser.window.innerWidth / aspect);
-				}
+				//if (canvas.width != Browser.window.innerWidth * ratio) {
+					canvas.width = Math.round(Browser.window.innerWidth * ratio);
+					canvas.height = Math.round(Browser.window.innerWidth * ratio / aspect);
+					styleWidth = Browser.window.innerWidth;
+					styleHeight = Browser.window.innerWidth / aspect;
+				//}
 				s = canvas.width / width;
 			}
 			canvas.scale(s, s);
@@ -396,15 +407,15 @@ class Game {
 				styleHeight = Math.round(Browser.window.innerWidth / aspect);
 			}
 		} else {
-			width = startWidth;
-			height = startHeight;
-			if (canvas.width != width) { canvas.width = width; resized = true; }
-			if (canvas.height != height) { canvas.height = height; resized = true; }
-		}
-		
-		if (scaleMode != ScaleMode.SCALE_BITMAP) {
-			styleWidth = canvas.width;
-			styleHeight = canvas.height;
+			width = Math.floor(startWidth * ratio);
+			height = Math.floor(startHeight * ratio);
+			styleWidth = startWidth;
+			styleHeight = startHeight;
+			//if (canvas.width != width) { canvas.width = width; resized = true; }
+			//if (canvas.height != height) { canvas.height = height; resized = true; }
+			if (canvas.width != width) canvas.width = width;
+			if (canvas.height != height) canvas.height = height;
+			canvas.scale(ratio, ratio);
 		}
 		
 		var w:String = styleWidth + "px";
@@ -455,6 +466,7 @@ class Game {
 		if (s.mouseEnabled && _mouseQueue.indexOf(s) < 0) {
 			var s2:Sprite = s;
 			while (s2 != null) {
+				if (!s2.visible) return;
 				if (s2.mask._items.length > 0) {
 					var m:Point = s2.globalToLocal(Input.mouseX, Input.mouseY);
 					tempTransform.identity();
