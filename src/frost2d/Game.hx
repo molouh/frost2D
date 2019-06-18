@@ -156,6 +156,10 @@ class Game {
 	private static function loop():Void {
 		Time._update();
 		
+		canvas.identity();
+		adjustSize();
+		adjustAlign();
+		
 		if (!preloaded) {
 			if (preloader.complete) {
 				preloaded = true;
@@ -167,10 +171,6 @@ class Game {
 				loaded = true;
 			}
 		}
-		
-		canvas.identity();
-		adjustSize();
-		adjustAlign();
 		
 		if (width != lastWidth || height != lastHeight) {
 			if (onResize != null) onResize();
