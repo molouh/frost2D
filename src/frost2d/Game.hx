@@ -21,9 +21,15 @@ class Game {
 	/** The root sprite of the game. */
 	public static var root(default, null):Sprite;
 	/** Width of the game, in pixels. */
-	public static var width(default, null):Int;
+	public static var width(default, set):Int;
+	public static function set_width(n:Int) {
+		return width = startWidth = n;
+	}
 	/** Height of the game, in pixels. */
-	public static var height(default, null):Int;
+	public static var height(default, set):Int;
+	public static function set_height(n:Int) {
+		return height = startHeight = n;
+	}
 	/** How to handle resizing the game to fit in the page.
 		Note: Changes are applied in the next frame. **/
 	public static var scaleMode:String = ScaleMode.NEVER;
@@ -48,13 +54,19 @@ class Game {
 	
 	/** Whether or not to use standard image smoothing when drawing.
 		Note: Some older browsers might not allow disabling image smoothing. */
-	public static var imageSmoothingEnabled(default, set):Bool = true;
-	static function set_imageSmoothingEnabled(v:Bool) {
+	public static var imageSmoothingEnabled:Bool = true;
+	
+	/** Whether or not to use pixelated CSS rendering properties.
+		Note: Some older browsers might not work as expected. */
+	public static var cssPixelated(default, set):Bool = false;
+	static function set_cssPixelated(v:Bool) {
 		if (started) {
-			var ctx:Dynamic = canvas._ctx;
-			ctx.webkitImageSmoothingEnabled = ctx.mozImageSmoothingEnabled = ctx.msImageSmoothingEnabled = ctx.oImageSmoothingEnabled = ctx.imageSmoothingEnabled = v;
+			var style:Dynamic = canvas._c.style;
+			style.imageRendering = "pixelated";
+			style.imageRendering = "-moz-crisp-edges";
+			style.imageRendering = "crispEdges";
 		}
-		return imageSmoothingEnabled = v;
+		return cssPixelated = v;
 	}
 	
 	/** Whether or not the game has been started. */
@@ -117,8 +129,8 @@ class Game {
 		//else if (fps < 0) #if debug throw new Error("Negative framerates are invalid!"); #else return; #end
 		
 		Game.root = root;
-		Game.width = startWidth = lastWidth = width;
-		Game.height = startHeight = lastHeight = height;
+		Game.width = lastWidth = width;
+		Game.height = lastHeight = height;
 		//Game.fps = fps;
 		Game.background = background;
 		Game.transparent = transparent;
@@ -142,7 +154,7 @@ class Game {
 		c.style.left = c.style.top = "0";
 		body.appendChild(c);
 		
-		if (!imageSmoothingEnabled) imageSmoothingEnabled = false;
+		if (cssPixelated) cssPixelated = true;
 		
 		Time._start();
 		Input._init(onMouseDown, onMouseUp);
@@ -186,7 +198,7 @@ class Game {
 		});
 		
 		Input._update();
-		var cursor:String = Input.hideCursor ? "none" : mouseOver != null && mouseOver.buttonMode ? "pointer" : "default";
+		var cursor:String = Input.hideCursor ? "none" : Input.handCursor || (mouseOver != null && mouseOver.buttonMode) ? "pointer" : "default";
 		if (Browser.document.body.style.cursor != cursor) Browser.document.body.style.cursor = cursor;
 		
 		render();
@@ -214,6 +226,8 @@ class Game {
 		canvas.drawRect(0, 0, width, height);
 		canvas.endFill();
 		
+		var ctx:Dynamic = cast canvas._ctx;
+		ctx.webkitImageSmoothingEnabled = ctx.mozImageSmoothingEnabled = ctx.msImageSmoothingEnabled = ctx.oImageSmoothingEnabled = ctx.imageSmoothingEnabled = imageSmoothingEnabled;
 		renderSprite(root);
 	}
 	
@@ -357,7 +371,7 @@ class Game {
 	private static function adjustSize():Void {
 		resized = false;
 		
-		var ratio:Float = Browser.window.devicePixelRatio != null ? Browser.window.devicePixelRatio : 1;
+		var ratio:Float = scaleDPI ? Browser.window.devicePixelRatio != null ? Browser.window.devicePixelRatio : 1 : 1;
 		// Currently only works with ScaleMode.NEVER && ScaleMode.SCALE
 		
 		if (scaleMode == ScaleMode.MATCH) {
@@ -390,7 +404,8 @@ class Game {
 				//}
 				s = canvas.width / width;
 			}
-			canvas.scale(s, s);
+			//canvas.scale(s, s);
+			canvas.setTransform(s, 0, 0, s, 0, 0);
 		} else if (scaleMode == ScaleMode.SCALE_BITMAP) {
 			width = startWidth;
 			height = startHeight;
@@ -502,7 +517,7 @@ class Game {
 		
 		if (mouseOver != old) {
 			if (old != null && old.onMouseOut != null) old.onMouseOut();
-			if (mouseOver != null && mouseOver.onMouseOut != null) mouseOver.onMouseOver();
+			if (mouseOver != null && mouseOver.onMouseOver != null) mouseOver.onMouseOver();
 		}
 		
 		if (lastMouseX != Input.mouseX || lastMouseY != Input.mouseY) {
@@ -518,22 +533,22 @@ class Game {
 	}
 	
 	/** Callback for when a mouse button is pressed. */
-	private static function onMouseDown(which:Int):Void {
+	private static function onMouseDown(button:Int):Void {
 		if (mouseOver != null && mouseInGame()) {
-			if (mouseOver.onMouseDown != null) mouseOver.onMouseDown(which);
-			clicks[which] = mouseOver;
+			if (mouseOver.onMouseDown != null) mouseOver.onMouseDown(button);
+			clicks[button] = mouseOver;
 		}
 	}
 	
 	/** Callback for when a mouse button is released. */
-	private static function onMouseUp(which:Int):Void {
+	private static function onMouseUp(button:Int):Void {
 		if (mouseOver != null) {
 			if (Input.focused) {
-				if (mouseOver.onMouseUp != null) mouseOver.onMouseUp(which);
-				if (clicks[which] == mouseOver && mouseOver.onClick != null) mouseOver.onClick(which);
+				if (mouseOver.onMouseUp != null) mouseOver.onMouseUp(button);
+				if (clicks[button] == mouseOver && mouseOver.onClick != null) mouseOver.onClick(button);
 			}
 		}
-		clicks[which] = null;
+		clicks[button] = null;
 	}
 	
 	/** Requests for the next frame to be triggered. */

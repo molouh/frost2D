@@ -8,6 +8,8 @@ import haxe.extern.EitherType;
 import js.Browser;
 import js.Error;
 import js.html.CanvasElement;
+import js.html.CanvasGradient;
+import js.html.CanvasPattern;
 import js.html.CanvasRenderingContext2D;
 import js.html.Image;
 import js.html.ImageElement;
@@ -96,7 +98,7 @@ class RenderCanvas {
 	
 	/**
 	 * Rotates the transform matrix.
-	 * @param	angle	A value in degrees.
+	 * @param	angle	A value in radians.
 	 */
 	public function rotate(angle:Float):Void {
 		if (angle == 0) return;
@@ -121,10 +123,10 @@ class RenderCanvas {
 	
 	/**
 	 * Makes subsequent drawing operations draw fills.
-	 * @param	color The CSS formatted color to use.
+	 * @param	style The fill color, gradient, or pattern to use.
 	 */
-	public function beginFill(color:String):Void {
-		_ctx.fillStyle = color;
+	public function beginFill(style:EitherType<String,EitherType<CanvasGradient,CanvasPattern>>):Void {
+		_ctx.fillStyle = style;
 		filling = true;
 	}
 	
@@ -134,10 +136,10 @@ class RenderCanvas {
 	/**
 	 * Makes subsequent drawing operations draw strokes.
 	 * @param	thickness	Line thickness, in pixels.
-	 * @param	color 		The CSS formatted color to use.
+	 * @param	style		The fill color, gradient, or pattern to use.
 	 */
-	public function beginStroke(thickness:Float = 1, color:String):Void {
-		_ctx.strokeStyle = color;
+	public function beginStroke(thickness:Float = 1, style:EitherType<String,EitherType<CanvasGradient,CanvasPattern>>):Void {
+		_ctx.strokeStyle = style;
 		_ctx.lineWidth = thickness;
 		stroking = true;
 	}
@@ -193,7 +195,8 @@ class RenderCanvas {
 	public function drawCircle(x:Float, y:Float, radius:Float):Void {
 		if ((!filling && !stroking) || radius <= 0) return;
 		_ctx.beginPath();
-		_ctx.arc(x, y, radius, .1, Math.PI * 2 + .1);
+		_ctx.arc(x, y, radius, 0, Math.PI * 2);
+		_ctx.closePath();
 		applyPath();
 	}
 	

@@ -9,6 +9,9 @@ class Time {
 	private static var lastTime:Float = 0;
 	/** Time when the previous frame happened. */
 	private static var frameTime:Float = 0;
+
+	public static var syncedMS(default, null):Float = 0;
+	public static var synced(default, null):Float = 0;
 	
 	/** Notifies this system that the game has been started.
 		Note: Do not call directly. */
@@ -22,6 +25,8 @@ class Time {
 		var t:Float = currentMS;
 		elapsedMS = t - frameTime;
 		frameTime = t;
+		syncedMS = t;
+		synced = t * .001;
 	}
 	
 	/** The current time, in milliseconds. */

@@ -21,6 +21,8 @@ class Input {
 	public static var mouseY(default, null):Float = 0;
 	/** Whether or not to hide the cursor. */
 	public static var hideCursor:Bool = false;
+	/** Whether or not to show the hand cursor. */
+	public static var handCursor:Bool = false;
 	
 	/** Keys to capture to prevent standard browser actions. */
 	public static var captureKeys(default, null):Array<Int> = [
@@ -116,27 +118,27 @@ class Input {
 		Browser.window.addEventListener("mousedown", function(e:MouseEvent) {
 			pos(e);
 			if (!denyInput(cast e.target)) {
-				if (e.which > 1) e.preventDefault();
-				clicks[e.which] = 1;
-				if (onMouseDown != null) onMouseDown(e.which);
-				gameMouseDown(e.which);
+				if (e.button != 0) e.preventDefault();
+				clicks[e.button] = 1;
+				if (onMouseDown != null) onMouseDown(e.button);
+				gameMouseDown(e.button);
 			}
 		});
 		
 		Browser.window.addEventListener("mouseup", function(e:MouseEvent) {
 			pos(e);
-			if (!denyInput(cast e.target) || clicks[e.which] == 1) {
-				if (e.which == 3 && untyped __js__('typeof InstallTrigger !== "undefined"')) {
+			if (!denyInput(cast e.target) || clicks[e.button] == 1) {
+				if (e.button == 2 && untyped __js__('typeof InstallTrigger !== "undefined"')) {
 					// Special check for Firefox, which lets the user always pull up the
 					// context menu by holding shift, while causing no contextmenu event.
 					keys = [];
 				}
-				if (onMouseUp != null) onMouseUp(e.which);
-				if (clicks[e.which] == 1 && onClick != null) onClick(e.which);
+				if (onMouseUp != null) onMouseUp(e.button);
+				if (clicks[e.button] == 1 && onClick != null) onClick(e.button);
 				
-				gameMouseUp(e.which);
+				gameMouseUp(e.button);
 			}
-			clicks[e.which] = null;
+			clicks[e.button] = null;
 		});
 		
 		Browser.window.addEventListener("click", function(e:MouseEvent) {

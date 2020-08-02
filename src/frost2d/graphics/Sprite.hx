@@ -74,7 +74,7 @@ class Sprite {
 				_updateReverse = false;
 			}
 		}
-		return _transform;
+		return _transformReverse;
 	}
 	
 	/** The sprite this sprite is a child of.
@@ -123,13 +123,13 @@ class Sprite {
 		Often a good alternative to using the paint object. */
 	public var onRender:RenderCanvas->Void;
 	/** Callback for when a mouse button is pressed over this sprite.
-		Int passed is which button (0 = Unknown, 1 = Left, 2 = Middle, 3 = Right). */
+		Int passed is which button (0 = Left, 1 = Middle, 2 = Right). */
 	public var onMouseDown:Int->Void;
 	/** Callback for when a mouse button is released over this sprite.
-		Int passed is which button (0 = Unknown, 1 = Left, 2 = Middle, 3 = Right). */
+		Int passed is which button (0 = Left, 1 = Middle, 2 = Right). */
 	public var onMouseUp:Int->Void;
 	/** Callback for after a mouse button is pressed and then released over this sprite.
-		Int passed is which button (0 = Unknown, 1 = Left, 2 = Middle, 3 = Right). */
+		Int passed is which button (0 = Left, 1 = Middle, 2 = Right). */
 	public var onClick:Int->Void;
 	/** Callback for when the mouse moves while over this sprite. */
 	public var onMouseMove:Void->Void;
